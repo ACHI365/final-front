@@ -1,0 +1,62 @@
+import React, { createContext, useContext, useState, ReactNode } from "react";
+
+interface AuthContextType {
+  isAuthenticated: boolean;
+  login: (token: string) => void;
+  logout: () => void;
+  currUser: User | undefined;
+  setCurrUser: React.Dispatch<React.SetStateAction<User | undefined>>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+interface User {
+  id: number;
+  email: string;
+  userName: string;
+  role: string;
+}
+
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+    localStorage.getItem("jwtToken") !== null
+  );
+  const [currUser, setCurrUser] = useState<User>();
+
+  const login = (data: any): void => {
+    localStorage.setItem("jwtToken", data.token);
+    let loggedUser = data.result.data;
+    setCurrUser(loggedUser)
+    localStorage.setItem("currUserId", String(loggedUser?.id))
+    localStorage.setItem("currUserEmail", String(loggedUser?.email))
+    localStorage.setItem("currUserUserName", String(loggedUser?.userName))
+    localStorage.setItem("currUserUserRole", String(loggedUser?.role))
+    setIsAuthenticated(true);
+  };
+
+  const logout = (): void => {
+    localStorage.removeItem("jwtToken");
+    setIsAuthenticated(false);
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{ isAuthenticated, login, logout, currUser, setCurrUser }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+

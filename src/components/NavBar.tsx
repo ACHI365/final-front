@@ -136,7 +136,7 @@ export default function Navbar(): JSX.Element {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
-                    document.cookie.includes("userRole=1")
+                    {/* document.cookie.includes("userRole=1") */}
                     {/* {localStorage.getItem("userID") == undefined ? ( */}
                     {!document.cookie.includes("userID") ? (
                       <>

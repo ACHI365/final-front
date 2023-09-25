@@ -1,53 +1,95 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Container } from "react-bootstrap";
-import LoginPage from "./components/LoginPage";
-import LanguageToggle from "./components/LanguageToggle";
-import ThemeToggle from "./components/ThemeToggle";
-import englishWords from "./translations/englishWords";
-import georgianWords from "./translations/georgianWords";
-import SignupPage from "./components/SignupPage";
+import Navbar from "./components/NavBar";
+import {
+  ClerkProvider,
+  SignIn,
+  SignUp,
+  SignedIn,
+  SignedOut,
+} from "@clerk/clerk-react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import "./styles.css";
+import SignInAttempt from "./components/SignInAttempt";
+import SignUpAttempt from "./components/SignUpAttempt";
+import CreateReview from "./components/CreateReview";
 import MainPage from "./components/MainPage";
+import AdminPanel from "./components/AdminPanel";
+import ReviewPage from "./components/ExternalPages/ReviewPage";
+import UserPage from "./components/ExternalPages/UserPage";
+import TagPage from "./components/ExternalPages/TagPage";
+import GroupPage from "./components/ExternalPages/GroupPage";
+import PiecePage from "./components/ExternalPages/PiecePage";
 
 const App: React.FC = () => {
-  const [language, setLanguage] = useState("en");
-  const [theme, setTheme] = useState("light");
+  if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
+    throw new Error("Missing Publishable Key");
+  }
 
-  const translations = language === "en" ? englishWords : georgianWords;
+  const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
 
-  const handleLanguageChange = (selectedLanguage: string) => {
-    setLanguage(selectedLanguage);
-  };
+  const ClerkWithRoutes = () => {
+    const navigate = useNavigate();
 
-  const handleThemeChange = (selectedTheme: "light" | "dark") => {
-    setTheme(selectedTheme);
+    return (
+      <ClerkProvider
+        publishableKey={clerkPubKey}
+        navigate={(to) => navigate(to)}
+      >
+        <Navbar />
+        <Routes>
+          <Route path="/sign-up-attempt" element={<SignUpAttempt />} />
+          <Route path="/create-review" element={<CreateReview />} />
+          <Route path="/" element={<MainPage />} />
+          <Route path="/admin-panel" element={<AdminPanel />} />
+          <Route path="/review/:revId" element={<ReviewPage />}></Route>
+          <Route path="/tag/:tagName" element={<TagPage />}></Route>
+          <Route path="/groups/:group" element={<GroupPage />}></Route>
+          <Route path="/piece/:pieceId" element={<PiecePage />}></Route>
+          <Route path="/user/:userId" element={<UserPage></UserPage>}></Route>
+          <Route
+            path="/sign-in/*"
+            element={
+              <SignIn
+                afterSignUpUrl={"/sign-up-attempt"}
+                redirectUrl={"/protected"}
+                signUpUrl="/sign-up"
+              />
+            }
+          />
+          <Route
+            path="/sign-up/*"
+            element={
+              <SignUp
+                redirectUrl={"/protected"}
+                afterSignUpUrl={"/sign-up-attempt"}
+              />
+            }
+          />
+          <Route
+            path="/protected"
+            element={
+              <>
+                <SignedIn>
+                  <SignInAttempt />
+                </SignedIn>
+                <SignedOut>
+                  <SignIn
+                    afterSignUpUrl={"/sign-up-attempt"}
+                    redirectUrl={"/protected"}
+                    signUpUrl="/sign-up"
+                  />
+                </SignedOut>
+              </>
+            }
+          />
+        </Routes>
+      </ClerkProvider>
+    );
   };
 
   return (
-    <Container
-      fluid
-      className={`vh-100 ${theme === "dark" ? "bg-dark" : "bg-light"}`}
-    >
-      <LanguageToggle onLanguageChange={handleLanguageChange} />
-      <ThemeToggle onThemeChange={handleThemeChange} />
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            <LoginPage translations={translations} />
-          }
-        />
-        {/* <Route
-          path="/signup"
-          element={
-            <SignupPage translations={translations} />
-          }
-        /> */}
-        <Route path="/mainPage"  element={
-            <MainPage translations={translations} />
-          }/>
-      </Routes>
-    </Container>
+    <div>
+      <ClerkWithRoutes />
+    </div>
   );
 };
 

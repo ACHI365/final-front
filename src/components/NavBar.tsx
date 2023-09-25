@@ -1,52 +1,191 @@
-import { NavLink } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Fragment, ReactNode, useState } from "react";
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { GlobeIcon, BellIcon, ArrowDownIcon } from "@heroicons/react/outline";
+import { useClerk, useUser } from "@clerk/clerk-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-function NavBar(): JSX.Element {
-  const auth = useAuth();
-
-  return (
-    <div>
-      <nav className="navbar navbar-expand navbar-light bg-light">
-        <h1 className="navbar-brand ml-3" style={{ marginLeft: '10px' }}>
-          <NavLink
-            className="nav-link"
-            to={auth.isAuthenticated ? 'mainPage' : 'login'}
-          >
-            Admin Panel
-          </NavLink>
-        </h1>
-        <div
-          className="collapse navbar-collapse justify-content-end"
-          id="navbarTogglerDemo03"
-        >
-          <ul className="navbar-nav">
-            {auth.isAuthenticated ? (
-              <li className="nav-item">
-                <button className="btn nav-link" onClick={auth.logout}>
-                  <NavLink className="nav-link" to="login">
-                    LogOut
-                  </NavLink>
-                </button>
-              </li>
-            ) : (
-              <>
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="login">
-                    LogIn
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="signup">
-                    SignUp
-                  </NavLink>
-                </li>
-              </>
-            )}
-          </ul>
-        </div>
-      </nav>
-    </div>
-  );
+interface NavigationItem {
+  name: string;
+  href: string;
+  current: boolean;
 }
 
-export default NavBar;
+const classNames = (...classes: string[]) => {
+  return classes.filter(Boolean).join(" ");
+};
+
+export default function Navbar(): JSX.Element {
+  const location = useLocation();
+
+  const [navigation, setNavigation] = useState<NavigationItem[]>([
+    { name: 'Dashboard', href: '/', current: location.pathname === '/' },
+    { name: 'Create Review', href: '/create-review', current: location.pathname === '/create-review' },
+    { name: 'Admin Panel', href: '/admin-panel', current: location.pathname === '/admin-panel' },
+    { name: 'Calendar', href: '#', current: location.pathname === '#' },
+  ]);
+
+  const handleNavigationClick = (index: number) => {
+    const updatedNavigation = navigation.map((item, i) => ({
+      ...item,
+      current: i === index,
+    }));
+    setNavigation(updatedNavigation);
+  };
+  
+  const { isLoaded, isSignedIn, user } = useUser();
+  const { signOut } = useClerk();
+  const auth = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    signOut();
+    auth.logout();
+    navigate("/sign-in");
+  };
+
+  return (
+    <Disclosure as="nav" className="bg-gray-800">
+      {({ open }) => (
+        <>
+          <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div className="relative flex h-16 items-center justify-between">
+              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                  <span className="absolute -inset-0.5" />
+                  <span className="sr-only">Open main menu</span>
+                  {open ? (
+                    <ArrowDownIcon
+                      className="block h-6 w-6"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <GlobeIcon className="block h-6 w-6" aria-hidden="true" />
+                  )}
+                </Disclosure.Button>
+              </div>
+              <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                <div className="flex flex-shrink-0 items-center">
+                  <img
+                    className="h-8 w-auto"
+                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                    alt="Your Company"
+                  />
+                </div>
+                <div className="hidden sm:ml-6 sm:block">
+                  <div className="flex space-x-4">
+                    {navigation.map((item: NavigationItem, index: number) => (
+                      <a
+                        key={item.name}
+                        href={item.href}
+                        className={classNames(
+                          item.current
+                            ? "bg-gray-900 text-white"
+                            : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                          "rounded-md px-3 py-2 text-sm font-medium"
+                        )}
+                        onClick={() => handleNavigationClick(index)} // Update the current value on click
+                        aria-current={item.current ? "page" : undefined}
+                      >
+                        {item.name}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                <button
+                  type="button"
+                  className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                ></button>
+
+                {/* Profile dropdown */}
+                <Menu as="div" className="relative ml-3">
+                  <div>
+                    {localStorage.getItem("userID") == undefined ? (
+                      <>
+                        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+                          <a
+                            href="/sign-in"
+                            className="text-sm font-semibold leading-6 text-white"
+                          >
+                            Log in <span aria-hidden="true">&rarr;</span>
+                          </a>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                          <p className="text-white">{user?.username}</p>
+                        </Menu.Button>
+                      </>
+                    )}
+                  </div>
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                  >
+                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      <Menu.Item>
+                        {({ active }) => (
+                          <a
+                            href={"/user/" + localStorage.getItem("userID")}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
+                          >
+                            Your Profile
+                          </a>
+                        )}
+                      </Menu.Item>
+                      <Menu.Item>
+                        {({ active }) => (
+                          <p
+                            onClick={handleSignOut}
+                            className={classNames(
+                              active ? "bg-gray-100" : "",
+                              "block px-4 py-2 text-sm text-gray-700"
+                            )}
+                          >
+                            Sign out
+                          </p>
+                        )}
+                      </Menu.Item>
+                    </Menu.Items>
+                  </Transition>
+                </Menu>
+              </div>
+            </div>
+          </div>
+
+          <Disclosure.Panel className="sm:hidden">
+            <div className="space-y-1 px-2 pb-3 pt-2">
+              {navigation.map((item) => (
+                <Disclosure.Button
+                  key={item.name}
+                  as="a"
+                  href={item.href}
+                  className={classNames(
+                    item.current
+                      ? "bg-gray-900 text-white"
+                      : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                    "block rounded-md px-3 py-2 text-base font-medium"
+                  )}
+                  aria-current={item.current ? "page" : undefined}
+                >
+                  {item.name}
+                </Disclosure.Button>
+              ))}
+            </div>
+          </Disclosure.Panel>
+        </>
+      )}
+    </Disclosure>
+  );
+}

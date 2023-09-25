@@ -37,17 +37,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = (data: any): void => {
     localStorage.setItem("jwtToken", data.token);
+    
     let loggedUser = data.result.data;
+    console.log(loggedUser);
     setCurrUser(loggedUser)
-    localStorage.setItem("currUserId", String(loggedUser?.id))
-    localStorage.setItem("currUserEmail", String(loggedUser?.email))
-    localStorage.setItem("currUserUserName", String(loggedUser?.userName))
-    localStorage.setItem("currUserUserRole", String(loggedUser?.role))
+    localStorage.setItem("userID", String(loggedUser?.userId))
+    localStorage.setItem("userRole", String(loggedUser?.role))
     setIsAuthenticated(true);
   };
 
   const logout = (): void => {
     localStorage.removeItem("jwtToken");
+    localStorage.removeItem("userID");
+    localStorage.removeItem("userRole");
     setIsAuthenticated(false);
   };
 

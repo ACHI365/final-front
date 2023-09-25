@@ -64,7 +64,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     document.cookie = `userID=${loggedUser?.userId}; path=/`;
     document.cookie = `userRole=${loggedUser?.role}; path=/`;
-
     setIsAuthenticated(true);
   };
 

@@ -27,7 +27,7 @@ const SignUpAttempt: React.FC = () => {
         Email: user?.primaryEmailAddress?.emailAddress,
       });
       if (response.data.isSuccess) {
-        navigate("/sign-in-attempt")
+        navigate("/")
       } else {
         window.alert("SignUp failed success");
         navigate("/sign-in");

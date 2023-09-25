@@ -11,6 +11,7 @@ import { useClerk, useUser } from "@clerk/clerk-react";
 import { useNavigate } from "react-router-dom";
 import Tags from "./TagInput";
 import ScoreGrading from "./ScoreGrading";
+import Cookies from "js-cookie";
 
 
 interface Review {
@@ -147,7 +148,7 @@ const CreateReview = () => {
           reviewText: review.reviewText,
           grade: score,
           // userId: Number(localStorage.getItem("userID")),
-          userId: Number((document.cookie.match(/(?<=userID=)\d+/) || [])[0] || 0),
+          userId: Number(Cookies.get("userID")),
           imageUrl:  "",
         };
         const reviewResponse = await createReview(reviewData);

@@ -20,6 +20,7 @@ import GroupPage from "./components/ExternalPages/GroupPage";
 import PiecePage from "./components/ExternalPages/PiecePage";
 import Security from "./components/Security";
 import React, { useEffect } from 'react';
+import Cookies from "js-cookie";
 
 
 const App: React.FC = () => {
@@ -32,6 +33,18 @@ const App: React.FC = () => {
   const AdminPanelRoute: React.FC = () => {
     const navigate = useNavigate();
   
+    useEffect(() => {
+      const jwtToken = Cookies.get('jwtToken');
+  
+      if (!jwtToken) {
+        navigate('/sign-in');
+      }
+    }, [navigate]);
+  
+  
+    return Cookies.get("jwtToken") == "1" ? <AdminPanel /> : null;
+  };
+
   //   useEffect(() => {
   //     const jwtToken = localStorage.getItem('jwtToken');
   
@@ -44,16 +57,6 @@ const App: React.FC = () => {
   //   return localStorage.getItem("jwtToken") == "1" ? <AdminPanel /> : null;
   // };
 
-  useEffect(() => {
-    const jwtToken = (document.cookie.match(/(?<=jwtToken=)[^;]*/) || [])[0];
-
-    if (!jwtToken) {
-      navigate('/sign-in');
-    }
-  }, [navigate]);
-
-  return (document.cookie.match(/(?<=jwtToken=)[^;]*/) || [])[0] === '1' ? <AdminPanel /> : null;
-};
 
   const ClerkWithRoutes = () => {
     const navigate = useNavigate();

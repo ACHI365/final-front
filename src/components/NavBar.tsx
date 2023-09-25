@@ -4,6 +4,7 @@ import { GlobeIcon, BellIcon, ArrowDownIcon } from "@heroicons/react/outline";
 import { useClerk, useUser } from "@clerk/clerk-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Cookies from "js-cookie";
 
 interface NavigationItem {
   name: string;
@@ -17,31 +18,17 @@ const classNames = (...classes: string[]) => {
 
 export default function Navbar(): JSX.Element {
   const location = useLocation();
-  let team = [];
+  let team = []
   // if(localStorage.getItem("userRole") == "1"){
-  if (document.cookie.includes("userRole=1")) {
-    team = [
-      { name: "Dashboard", href: "/", current: location.pathname === "/" },
-      {
-        name: "Create Review",
-        href: "/create-review",
-        current: location.pathname === "/create-review",
-      },
-      {
-        name: "Admin Panel",
-        href: "/admin-panel",
-        current: location.pathname === "/admin-panel",
-      },
-    ];
-  } else {
-    team = [
-      { name: "Dashboard", href: "/", current: location.pathname === "/" },
-      {
-        name: "Create Review",
-        href: "/create-review",
-        current: location.pathname === "/create-review",
-      },
-    ];
+    if(Cookies.get("userROle") == "1"){
+    team =
+     [{ name: 'Dashboard', href: '/', current: location.pathname === '/' },
+    { name: 'Create Review', href: '/create-review', current: location.pathname === '/create-review' },
+    { name: 'Admin Panel', href: '/admin-panel', current: location.pathname === '/admin-panel' }]
+  }else{
+    team = 
+    [{ name: 'Dashboard', href: '/', current: location.pathname === '/' },
+    { name: 'Create Review', href: '/create-review', current: location.pathname === '/create-review' }]
   }
 
   const [navigation, setNavigation] = useState<NavigationItem[]>(team);
@@ -53,31 +40,18 @@ export default function Navbar(): JSX.Element {
     }));
     setNavigation(updatedNavigation);
   };
-
+  
   const { isLoaded, isSignedIn, user } = useUser();
   const { signOut } = useClerk();
   const auth = useAuth();
   const navigate = useNavigate();
 
-  // const handleSignOut = () => {
-  //   signOut();
-  //   auth.logout();
-  //   navigate("/sign-in");
-  // };
-
   const handleSignOut = () => {
-    // Remove cookies for authentication
     signOut();
     auth.logout();
-    document.cookie =
-      "jwtToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-    document.cookie = "userID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-    document.cookie =
-      "userRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-
-    // setIsAuthenticated(false);
     navigate("/sign-in");
   };
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -136,9 +110,8 @@ export default function Navbar(): JSX.Element {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
-                    {/* document.cookie.includes("userRole=1") */}
                     {/* {localStorage.getItem("userID") == undefined ? ( */}
-                    {!document.cookie.includes("userID") ? (
+                    {Cookies.get("userID") == undefined ? (
                       <>
                         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
                           <a
@@ -170,13 +143,8 @@ export default function Navbar(): JSX.Element {
                       <Menu.Item>
                         {({ active }) => (
                           <a
-                            href={
-                              !document.cookie.includes("userID")
-                                ? "/sign-in"
-                                : "/user/" +
-                                  (document.cookie.match(/(?<=userID=)\d+/) ||
-                                    [])[0]
-                            }
+                            // href={"/user/" + localStorage.getItem("userID")}
+                            href={"/user/" + Cookies.get("userID")}
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"

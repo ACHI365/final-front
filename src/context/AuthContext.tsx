@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface AuthContextType {
@@ -32,8 +33,8 @@ export const useAuth = (): AuthContextType => {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
     // localStorage.getItem("jwtToken") !== null
-    document.cookie.includes("jwtToken")
-
+    // document.cookie.includes("jwtToken")
+    Cookies.get("jwtToken") !== null
   );
   const [currUser, setCurrUser] = useState<User>();
 
@@ -56,24 +57,42 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // };
 
   const login = (data: any): void => {
-    document.cookie = `jwtToken=${data.token}; path=/`;
-
+    Cookies.set("jwtToken", data.token);
+    
     let loggedUser = data.result.data;
     console.log(loggedUser);
-    setCurrUser(loggedUser);
-
-    document.cookie = `userID=${loggedUser?.userId}; path=/`;
-    document.cookie = `userRole=${loggedUser?.role}; path=/`;
+    setCurrUser(loggedUser)
+    Cookies.set("userID", String(loggedUser?.userId))
+    Cookies.set("userRole", String(loggedUser?.role))
     setIsAuthenticated(true);
   };
 
   const logout = (): void => {
-    document.cookie = "jwtToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-    document.cookie = "userID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-    document.cookie = "userRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-
+    Cookies.remove("jwtToken");
+    Cookies.remove("userID");
+    Cookies.remove("userRole");
     setIsAuthenticated(false);
   };
+
+  // const login = (data: any): void => {
+  //   document.cookie = `jwtToken=${data.token}; path=/`;
+
+  //   let loggedUser = data.result.data;
+  //   console.log(loggedUser);
+  //   setCurrUser(loggedUser);
+
+  //   document.cookie = `userID=${loggedUser?.userId}; path=/`;
+  //   document.cookie = `userRole=${loggedUser?.role}; path=/`;
+  //   setIsAuthenticated(true);
+  // };
+
+  // const logout = (): void => {
+  //   document.cookie = "jwtToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+  //   document.cookie = "userID=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+  //   document.cookie = "userRole=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+
+  //   setIsAuthenticated(false);
+  // };
 
   return (
     <AuthContext.Provider

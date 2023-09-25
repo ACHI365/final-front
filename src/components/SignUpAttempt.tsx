@@ -17,6 +17,10 @@ const SignUpAttempt: React.FC = () => {
 
   const handleSignup = async () => {
     try {
+      console.log( user?.fullName,
+        user?.username,
+         user?.primaryEmailAddress?.emailAddress,);
+      
       const response = await signup({
         Name: user?.fullName,
         UserName: user?.username,
@@ -25,11 +29,11 @@ const SignUpAttempt: React.FC = () => {
       if (response.data.isSuccess) {
         navigate("/")
       } else {
-        window.alert("SignUp failed");
+        window.alert("SignUp failed success");
         navigate("/sign-in");
       }
     } catch (error: any) {
-      window.alert("SignUp failed");
+      window.alert("SignUp failed error");
       navigate("/sign-in");
     }
   };

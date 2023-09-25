@@ -55,7 +55,7 @@ const App: React.FC = () => {
         <Navbar />
         <Routes>
           <Route path="/sign-up-attempt" element={<SignUpAttempt />} />
-          <Route
+          <Route  
             path="/create-review"
             element={
               <Security>

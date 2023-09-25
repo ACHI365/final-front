@@ -18,6 +18,8 @@ import UserPage from "./components/ExternalPages/UserPage";
 import TagPage from "./components/ExternalPages/TagPage";
 import GroupPage from "./components/ExternalPages/GroupPage";
 import PiecePage from "./components/ExternalPages/PiecePage";
+import Security from "./components/Security";
+import React, { useEffect } from 'react';
 
 const App: React.FC = () => {
   if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
@@ -25,6 +27,21 @@ const App: React.FC = () => {
   }
 
   const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
+
+  const AdminPanelRoute: React.FC = () => {
+    const navigate = useNavigate();
+  
+    useEffect(() => {
+      const jwtToken = localStorage.getItem('jwtToken');
+  
+      if (!jwtToken) {
+        navigate('/sign-in');
+      }
+    }, [navigate]);
+  
+  
+    return localStorage.getItem("jwtToken") == "1" ? <AdminPanel /> : null;
+  };
 
   const ClerkWithRoutes = () => {
     const navigate = useNavigate();
@@ -37,48 +54,69 @@ const App: React.FC = () => {
         <Navbar />
         <Routes>
           <Route path="/sign-up-attempt" element={<SignUpAttempt />} />
-          <Route path="/create-review" element={<CreateReview />} />
+          <Route
+            path="/create-review"
+            element={
+              <Security>
+                <CreateReview />
+              </Security>
+            }
+          />
           <Route path="/" element={<MainPage />} />
-          <Route path="/admin-panel" element={<AdminPanel />} />
+          <Route
+            path="/admin-panel"
+            element={
+              <Security>
+                <AdminPanelRoute />
+              </Security>
+            }
+          />
           <Route path="/review/:revId" element={<ReviewPage />}></Route>
           <Route path="/tag/:tagName" element={<TagPage />}></Route>
           <Route path="/groups/:group" element={<GroupPage />}></Route>
           <Route path="/piece/:pieceId" element={<PiecePage />}></Route>
           <Route path="/user/:userId" element={<UserPage></UserPage>}></Route>
+
           <Route
             path="/sign-in/*"
             element={
-              <SignIn
-                afterSignUpUrl={"/sign-up-attempt"}
-                redirectUrl={"/protected"}
-                signUpUrl="/sign-up"
-              />
+              <div className="flex justify-center items-center h-screen">
+                <SignIn
+                  afterSignUpUrl={"/sign-up-attempt"}
+                  redirectUrl={"/protected"}
+                  signUpUrl="/sign-up"
+                />
+              </div>
             }
           />
           <Route
             path="/sign-up/*"
             element={
-              <SignUp
-                redirectUrl={"/protected"}
-                afterSignUpUrl={"/sign-up-attempt"}
-              />
+              <div className="flex justify-center items-center h-screen">
+                <SignUp
+                  redirectUrl={"/protected"}
+                  afterSignUpUrl={"/sign-up-attempt"}
+                />
+              </div>
             }
           />
           <Route
             path="/protected"
             element={
-              <>
-                <SignedIn>
-                  <SignInAttempt />
-                </SignedIn>
-                <SignedOut>
-                  <SignIn
-                    afterSignUpUrl={"/sign-up-attempt"}
-                    redirectUrl={"/protected"}
-                    signUpUrl="/sign-up"
-                  />
-                </SignedOut>
-              </>
+              <div className="flex justify-center items-center h-screen">
+                <>
+                  <SignedIn>
+                    <SignInAttempt />
+                  </SignedIn>
+                  <SignedOut>
+                    <SignIn
+                      afterSignUpUrl={"/sign-up-attempt"}
+                      redirectUrl={"/protected"}
+                      signUpUrl="/sign-up"
+                    />
+                  </SignedOut>
+                </>
+              </div>
             }
           />
         </Routes>

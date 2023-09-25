@@ -26,7 +26,9 @@ const TagCloud: React.FC = () => {
   const fetchMostUsedTags = async (): Promise<string[]> => {
     try {
       const response = await getAllTags();
-      const tags: any[] = response.data;
+      console.log(response.data);
+
+      const tags: any[] = [...response.data];
       const sortedTags = tags
         .sort((a, b) => b.amount - a.amount)
         .map((tag) => tag.name);

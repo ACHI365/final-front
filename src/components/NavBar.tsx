@@ -17,13 +17,19 @@ const classNames = (...classes: string[]) => {
 
 export default function Navbar(): JSX.Element {
   const location = useLocation();
-
-  const [navigation, setNavigation] = useState<NavigationItem[]>([
-    { name: 'Dashboard', href: '/', current: location.pathname === '/' },
+  let team = []
+  if(localStorage.getItem("userRole") == "1"){
+    team =
+     [{ name: 'Dashboard', href: '/', current: location.pathname === '/' },
     { name: 'Create Review', href: '/create-review', current: location.pathname === '/create-review' },
-    { name: 'Admin Panel', href: '/admin-panel', current: location.pathname === '/admin-panel' },
-    { name: 'Calendar', href: '#', current: location.pathname === '#' },
-  ]);
+    { name: 'Admin Panel', href: '/admin-panel', current: location.pathname === '/admin-panel' }]
+  }else{
+    team = 
+    [{ name: 'Dashboard', href: '/', current: location.pathname === '/' },
+    { name: 'Create Review', href: '/create-review', current: location.pathname === '/create-review' }]
+  }
+
+  const [navigation, setNavigation] = useState<NavigationItem[]>(team);
 
   const handleNavigationClick = (index: number) => {
     const updatedNavigation = navigation.map((item, i) => ({

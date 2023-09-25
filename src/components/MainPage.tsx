@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import {
-  getAllPieces,
   getAllReviews,
   getPieceById,
   getTagsForReview,
   getUserById,
-  getAllTags,
-  PieceDto,
-  getReviewsByPiece,
 } from "../service/api";
 import TagCloud from "./TagCloud";
 import SortByDate from "./sorting/SortByDate";
 import SortByGrade from "./sorting/SortByGrade";
+import ReviewView from "./ExternalPages/Review";
 
 interface Review {
   reviewId: number;
@@ -21,6 +17,8 @@ interface Review {
   pieceId: number;
   grade: number;
   reviewText: string;
+  tags: string[];
+  author: string;
   userId: number;
   creationTime: string;
   group: number;
@@ -34,31 +32,24 @@ const MainPage: React.FC = () => {
   const [tags, setTags] = useState<{ [id: number]: string[] }>({});
   const [sortByDate, setSortByDate] = useState<"asc" | "desc">("asc");
   const [sortByGrade, setSortByGrade] = useState<"asc" | "desc">("asc");
+  const [dummy, setDummy] = useState<number>(0);
 
-  const navigate = useNavigate();
   useEffect(() => {
     fetchReviews();
   }, [sortByDate, sortByGrade]);
 
-  // useEffect(() => {
-  //   fetchReviews();
-  // }, [])
-
-  
   const handleSortByDate = (value: "asc" | "desc") => {
     setSortByDate(value);
-    // fetchReviews();
   };
 
   const handleSortByGrade = (value: "asc" | "desc") => {
     setSortByGrade(value);
-    // fetchReviews();
   };
 
   const fetchReviews = async () => {
     console.log(sortByDate + "date");
     console.log(sortByGrade + "grade");
-    
+
     try {
       const response = await getAllReviews();
       let sortedReviews = response.data;
@@ -153,34 +144,6 @@ const MainPage: React.FC = () => {
     }
   };
 
-  const handleNavigate = (revId: number) => {
-    navigate("/review/" + revId);
-  };
-
-  const handleNavigateUser = (userId: number) => {
-    navigate("/user/" + userId);
-  };
-
-  const handleNavigatePiece = (pieceId: number) => {
-    navigate("/piece/" + pieceId);
-  };
-
-  const handleNavigateTag = (tagName: string) => {
-    navigate("/tag/" + tagName);
-  };
-
-  const handleNavigateGroup = (group: number) => {
-    navigate("/groups/" + group);
-  };
-
-  const formatDate = (isoDate: string): string => {
-    const options: Intl.DateTimeFormatOptions = {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    };
-    return new Date(isoDate).toLocaleDateString(undefined, options);
-  };
 
   return (
     <div className="bg-white py-5 sm:py-5">
@@ -193,72 +156,16 @@ const MainPage: React.FC = () => {
           </div>
           <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 border-t border-gray-200 pt-10 sm:mt-16 sm:pt-16 lg:mx-0 lg:max-w-none lg:grid-cols-2">
             {reviews.map((post) => (
-              <article
+              <ReviewView
                 key={post.reviewId}
-                className="flex max-w-xl flex-col items-start justify-between border rounded-md p-5 shadow-md"
-              >
-                <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center gap-x-4 text-xs">
-                    <time
-                      dateTime={post.creationTime}
-                      className="text-gray-500"
-                    >
-                      {formatDate(post.creationTime)}
-                    </time>
-                    <a className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">
-                      <span
-                        className="absolute inset-0"
-                        onClick={() => handleNavigatePiece(post.pieceId)}
-                      />
-                      {pieceNames[post.reviewId]}
-                    </a>
-                    <a className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100">
-                      <span
-                        className="absolute inset-0"
-                        onClick={() => handleNavigateGroup(post.group)}
-                      />
-                      {pieceGroups[post.reviewId]}
-                    </a>
-                  </div>
-                  <div className="text-gray-500">{post.grade}</div>{" "}
-                </div>
-
-                <div className="group relative mt-3">
-                  <h3 className="text-lg font-semibold leading-6 text-gray-900 group-hover:text-gray-600">
-                    <a onClick={() => handleNavigate(post.reviewId)}>
-                      <span className="absolute inset-0" />
-                      {post.reviewName}
-                    </a>
-                  </h3>
-                  <p className="mt-5 line-clamp-3 text-sm leading-6 text-gray-600 overflow-hidden">
-                    {post.reviewText}
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-2 items-center text-xs mt-2">
-                  {tags[post.reviewId] != undefined &&
-                    tags[post.reviewId].map((tag, index) => (
-                      <a
-                        key={index}
-                        className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100"
-                        onClick={() => handleNavigateTag(tag)}
-                      >
-                        <span className="absolute inset-0" />
-                        {tag}
-                      </a>
-                    ))}
-                </div>
-                <div className="relative mt-8 flex items-center gap-x-4">
-                  {/* <img src={post.author.imageUrl} alt="" className="h-10 w-10 rounded-full bg-gray-50" /> */}
-                  <div className="text-sm leading-6">
-                    <p className="font-semibold text-gray-900">
-                      <a onClick={() => handleNavigateUser(post.userId)}>
-                        <span className="absolute inset-0 hover:cursor-pointer" />
-                        {userNames[post.reviewId]}
-                      </a>
-                    </p>
-                  </div>
-                </div>
-              </article>
+                post={post}
+                pieceGroups={pieceGroups}
+                pieceNames={pieceNames}
+                userNames={userNames}
+                tags={tags}
+                dummy={dummy} 
+                setDummy={setDummy}
+              />
             ))}
           </div>
         </div>

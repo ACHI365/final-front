@@ -3,10 +3,6 @@ import App from "./App";
 import { BrowserRouter} from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import "./styles.css"
-import {
-  HashRouter as Router,
-  Route,
-  } from 'react-router-dom';
 
 
 const root = ReactDOM.createRoot(
@@ -14,8 +10,8 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <AuthProvider>
-    <Router>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <App />
-    </Router>
+    </BrowserRouter>
   </AuthProvider>
 );

@@ -145,8 +145,7 @@ const ReviewView: React.FC<ReviewPageProps> = ({
       key={post.reviewId}
       className="flex max-w-xl flex-col items-start justify-between border rounded-md p-5 shadow-md"
     >
-      {(isLiked != null ||
-         !isAuthorized) && (
+      { (
           <div>
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-x-4 text-xs">

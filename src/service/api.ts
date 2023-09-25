@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
-const apiBaseUrl: string ="https://localhost:7081";
+const apiBaseUrl: string = process.env.REACT_APP_BACK_URL!;
 const API_BASE_URL: string = `${apiBaseUrl}/api`;
 
 const api: AxiosInstance = axios.create({

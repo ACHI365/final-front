@@ -14,7 +14,6 @@ import {
 } from "../../service/api"; // Replace with your API call to get a review by ID
 import LikeButton from "./LikeButton";
 import CommentButton from "./CommentButton";
-import Cookies from "js-cookie";
 
 interface Comment {
   id: number;
@@ -99,8 +98,7 @@ const ReviewPage: React.FC = () => {
         console.log(commentsResponse.data);
         setComments(commentsResponse.data);
         setReview(response.data);
-        // if (localStorage.getItem("jwtToken")) {
-        if (Cookies.get("jwtToken")) {
+        if (localStorage.getItem("jwtToken")) {
           const response3 = await checkLikeStatus(parseInt(revId!));
           const response2 = await getLikeCount(parseInt(revId!));
           setIsLiked(response3.data);
@@ -148,8 +146,7 @@ const ReviewPage: React.FC = () => {
             i <= rating ? "text-yellow-500" : "text-gray-300"
           }`}
           onClick={
-            // localStorage.getItem("jwtToken") ? () => handleRatePiece(i) : () => navigate("/sign-in")
-            Cookies.get("jwtToken") ? () => handleRatePiece(i) : () => navigate("/sign-in")
+            localStorage.getItem("jwtToken") ? () => handleRatePiece(i) : () => navigate("/sign-in")
           }
         >
           ★
@@ -299,8 +296,7 @@ const ReviewPage: React.FC = () => {
           <p className="text-gray-700 mt-2">Rating: {review.grade}</p>
           <div
             onClick={
-              // localStorage.getItem("jwtToken")
-              Cookies.get("jwtToken")
+              localStorage.getItem("jwtToken")
                 ? handleCommentClick
                 : () => navigate("/sign-in")
             }

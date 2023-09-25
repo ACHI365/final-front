@@ -10,7 +10,6 @@ import {
   getRating,
   ratePiece,
 } from "../../service/api";
-import Cookies from "js-cookie";
 
 interface Review {
   reviewId: number;
@@ -48,10 +47,7 @@ const ReviewView: React.FC<ReviewPageProps> = ({
   const navigate = useNavigate();
   const [rating, setRating] = useState<number>(0);
   const [averageRating, setAverageRating] = useState<number>(0);
-  // const isAuthorized = localStorage.getItem("jwtToken");
-  const isAuthorized = Cookies.get("jwtToken");
-  // const isAuthorized = (document.cookie.match(/(?<=jwtToken=)[^;]*/) || [])[0];
-
+  const isAuthorized = localStorage.getItem("jwtToken");
 
   const handleNavigate = (revId: number) => {
     navigate("/review/" + revId);

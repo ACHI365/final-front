@@ -38,39 +38,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   );
   const [currUser, setCurrUser] = useState<User>();
 
-  // const login = (data: any): void => {
-  //   localStorage.setItem("jwtToken", data.token);
-    
-  //   let loggedUser = data.result.data;
-  //   console.log(loggedUser);
-  //   setCurrUser(loggedUser)
-  //   localStorage.setItem("userID", String(loggedUser?.userId))
-  //   localStorage.setItem("userRole", String(loggedUser?.role))
-  //   setIsAuthenticated(true);
-  // };
-
-  // const logout = (): void => {
-  //   localStorage.removeItem("jwtToken");
-  //   localStorage.removeItem("userID");
-  //   localStorage.removeItem("userRole");
-  //   setIsAuthenticated(false);
-  // };
-
   const login = (data: any): void => {
-    Cookies.set("jwtToken", data.token);
+    localStorage.setItem("jwtToken", data.token);
     
     let loggedUser = data.result.data;
     console.log(loggedUser);
     setCurrUser(loggedUser)
-    Cookies.set("userID", String(loggedUser?.userId))
-    Cookies.set("userRole", String(loggedUser?.role))
+    localStorage.setItem("userID", String(loggedUser?.userId))
+    localStorage.setItem("userRole", String(loggedUser?.role))
     setIsAuthenticated(true);
   };
 
   const logout = (): void => {
-    Cookies.remove("jwtToken");
-    Cookies.remove("userID");
-    Cookies.remove("userRole");
+    localStorage.removeItem("jwtToken");
+    localStorage.removeItem("userID");
+    localStorage.removeItem("userRole");
     setIsAuthenticated(false);
   };
 

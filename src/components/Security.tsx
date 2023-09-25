@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,8 +16,7 @@ const Security: React.FC<SecurityProps> = ({ children }) => {
   
 
   useEffect(() => {
-    // const jwtToken = localStorage.getItem('jwtToken');
-    const jwtToken = Cookies.get('jwtToken');
+    const jwtToken = localStorage.getItem('jwtToken');
 
     if (!jwtToken) {
       redirectToSignIn(navigate);

@@ -4,7 +4,6 @@ import { GlobeIcon, BellIcon, ArrowDownIcon } from "@heroicons/react/outline";
 import { useClerk, useUser } from "@clerk/clerk-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import Cookies from "js-cookie";
 
 interface NavigationItem {
   name: string;
@@ -19,8 +18,7 @@ const classNames = (...classes: string[]) => {
 export default function Navbar(): JSX.Element {
   const location = useLocation();
   let team = []
-  // if(localStorage.getItem("userRole") == "1"){
-    if(Cookies.get("userROle") == "1"){
+  if(localStorage.getItem("userRole") == "1"){
     team =
      [{ name: 'Dashboard', href: '/', current: location.pathname === '/' },
     { name: 'Create Review', href: '/create-review', current: location.pathname === '/create-review' },
@@ -110,8 +108,7 @@ export default function Navbar(): JSX.Element {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
-                    {/* {localStorage.getItem("userID") == undefined ? ( */}
-                    {Cookies.get("userID") == undefined ? (
+                    {localStorage.getItem("userID") == undefined ? (
                       <>
                         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
                           <a
@@ -143,8 +140,7 @@ export default function Navbar(): JSX.Element {
                       <Menu.Item>
                         {({ active }) => (
                           <a
-                            // href={"/user/" + localStorage.getItem("userID")}
-                            href={"/user/" + Cookies.get("userID")}
+                            href={"/user/" + localStorage.getItem("userID")}
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"

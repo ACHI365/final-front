@@ -32,17 +32,28 @@ const App: React.FC = () => {
   const AdminPanelRoute: React.FC = () => {
     const navigate = useNavigate();
   
-    useEffect(() => {
-      const jwtToken = localStorage.getItem('jwtToken');
+  //   useEffect(() => {
+  //     const jwtToken = localStorage.getItem('jwtToken');
   
-      if (!jwtToken) {
-        navigate('/sign-in');
-      }
-    }, [navigate]);
+  //     if (!jwtToken) {
+  //       navigate('/sign-in');
+  //     }
+  //   }, [navigate]);
   
   
-    return localStorage.getItem("jwtToken") == "1" ? <AdminPanel /> : null;
-  };
+  //   return localStorage.getItem("jwtToken") == "1" ? <AdminPanel /> : null;
+  // };
+
+  useEffect(() => {
+    const jwtToken = (document.cookie.match(/(?<=jwtToken=)[^;]*/) || [])[0];
+
+    if (!jwtToken) {
+      navigate('/sign-in');
+    }
+  }, [navigate]);
+
+  return (document.cookie.match(/(?<=jwtToken=)[^;]*/) || [])[0] === '1' ? <AdminPanel /> : null;
+};
 
   const ClerkWithRoutes = () => {
     const navigate = useNavigate();

@@ -146,7 +146,8 @@ const CreateReview = () => {
           group: getGroupNumber(review.group),
           reviewText: review.reviewText,
           grade: score,
-          userId: Number(localStorage.getItem("userID")),
+          // userId: Number(localStorage.getItem("userID")),
+          userId: Number((document.cookie.match(/(?<=userID=)\d+/) || [])[0] || 0),
           imageUrl:  "",
         };
         const reviewResponse = await createReview(reviewData);

@@ -47,7 +47,9 @@ const ReviewView: React.FC<ReviewPageProps> = ({
   const navigate = useNavigate();
   const [rating, setRating] = useState<number>(0);
   const [averageRating, setAverageRating] = useState<number>(0);
-  const isAuthorized = localStorage.getItem("jwtToken");
+  // const isAuthorized = localStorage.getItem("jwtToken");
+  const isAuthorized = (document.cookie.match(/(?<=jwtToken=)[^;]*/) || [])[0];
+
 
   const handleNavigate = (revId: number) => {
     navigate("/review/" + revId);

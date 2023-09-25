@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
-const apiBaseUrl: string = process.env.REACT_APP_API_BASE_URL!;
+const apiBaseUrl: string ="https://localhost:7081";
 const API_BASE_URL: string = `${apiBaseUrl}/api`;
 
 const api: AxiosInstance = axios.create({
@@ -75,31 +75,15 @@ export const googleLogin = (): Promise<AxiosResponse> =>
 export const signup = (data: registerData): Promise<AxiosResponse> =>
   api.post("/Auth/register", data);
 export const getAllTags = (): Promise<AxiosResponse<Tag[]>> =>
-  api.get("/Tag/get-all", {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get("/Tag/get-all");
 
 export const createTag = (tag: Tag): Promise<AxiosResponse> =>
-  api.post("/Tag", tag, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.post("/Tag", tag);
 
 export const getTagByName = (tagName: string): Promise<AxiosResponse<Tag>> =>
-  api.get(`/Tag/${tagName}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get(`/Tag/${tagName}`);
 export const getAllPieces = (): Promise<AxiosResponse<PieceDto[]>> =>
-  api.get("/Piece/getAll", {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get("/Piece/getAll",);
 
 export const createPiece = (piece: PieceDto): Promise<AxiosResponse> =>
   api.post("/Piece/create-piece", piece, {
@@ -111,27 +95,15 @@ export const createPiece = (piece: PieceDto): Promise<AxiosResponse> =>
 export const getPieceByName = (
   pieceName: string
 ): Promise<AxiosResponse<PieceDto>> =>
-  api.get(`/Piece/get/${pieceName}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get(`/Piece/get/${pieceName}`);
 
 export const getPieceById = (pieceId: number): Promise<AxiosResponse> =>
-  api.get(`/Piece/getId/${pieceId}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get(`/Piece/getId/${pieceId}`);
 
 export const getPiecesByGroup = (
   groupId: number
 ): Promise<AxiosResponse<PieceDto[]>> =>
-  api.get(`/Piece/getAllGroup/${groupId}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get(`/Piece/getAllGroup/${groupId}`);
 export const getUserManagement = (): Promise<AxiosResponse> =>
   api.get("/User/user-management", {
     headers: {
@@ -140,11 +112,7 @@ export const getUserManagement = (): Promise<AxiosResponse> =>
   });
 
 export const getUserById = (userId: number): Promise<AxiosResponse<User>> =>
-  api.get(`/User/get/${userId}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get(`/User/get/${userId}`);
 
 export const createReview = (model: ReviewCreateDto): Promise<AxiosResponse> =>
   api.post("/Review/create-review", model, {
@@ -171,45 +139,21 @@ export const deleteReview = (reviewId: number): Promise<AxiosResponse> =>
   });
 
 export const getReview = (reviewId: number): Promise<AxiosResponse> =>
-  api.get(`/Review/get-review/${reviewId}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get(`/Review/get-review/${reviewId}`);
 
 export const getAllReviews = (): Promise<AxiosResponse> =>
-  api.get("/Review/get-all-reviews", {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get("/Review/get-all-reviews");
 
 export const getReviewsByTag = (tagName: string): Promise<AxiosResponse> =>
-  api.get(`/Review/get-review-by-tag/${tagName}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get(`/Review/get-review-by-tag/${tagName}`);
 export const getReviewsByUser = (userId: number): Promise<AxiosResponse> =>
-  api.get(`/Review/get-review-by-user/${userId}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get(`/Review/get-review-by-user/${userId}`);
 
 export const getReviewsByPiece = (pieceId: number): Promise<AxiosResponse> =>
-  api.get(`/Review/get-review-by-piece/${pieceId}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get(`/Review/get-review-by-piece/${pieceId}`);
 
 export const getReviewsByGroup = (group: number): Promise<AxiosResponse> =>
-  api.get(`/Review/get-review-by-group/${group}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get(`/Review/get-review-by-group/${group}`);
 
 export const getLikeCount = (reviewId: number): Promise<AxiosResponse> =>
   api.get(`/Review/likeCount/${reviewId}/`, {
@@ -239,16 +183,10 @@ export const unlikeReview = (reviewId: number): Promise<AxiosResponse> =>
   );
 
 export const getTagsForReview = (reviewId: number): Promise<AxiosResponse> =>
-  api.get(`/Review/review-tags/${reviewId}`, {
-    headers: { Authorization: `Bearer ${localStorage.getItem("jwtToken")}` },
-  });
+  api.get(`/Review/review-tags/${reviewId}`);
 
 export const getCommentsByReview = (reviewId: number): Promise<AxiosResponse> =>
-  api.get(`/Review/get-comments/${reviewId}`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-    },
-  });
+  api.get(`/Review/get-comments/${reviewId}`);
 
 export const addComment = (commentDto: CommentDto): Promise<AxiosResponse> =>
   api.post(`/Review/add-comment`, commentDto, {

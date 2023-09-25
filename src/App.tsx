@@ -21,6 +21,7 @@ import PiecePage from "./components/ExternalPages/PiecePage";
 import Security from "./components/Security";
 import React, { useEffect } from 'react';
 
+
 const App: React.FC = () => {
   if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
     throw new Error("Missing Publishable Key");

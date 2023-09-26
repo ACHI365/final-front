@@ -39,7 +39,7 @@ export default function Navbar(): JSX.Element {
         name: "Create Review",
         href: "/create-review",
         current: location.pathname === "/create-review",
-      },
+      }
     ];
   }
 
@@ -67,6 +67,15 @@ export default function Navbar(): JSX.Element {
           href: "/admin-panel",
           current: location.pathname === "/admin-panel",
         },
+      ])
+    }else{
+      setNavigation([
+        { name: "Dashboard", href: "/", current: location.pathname === "/" },
+        {
+          name: "Create Review",
+          href: "/create-review",
+          current: location.pathname === "/create-review",
+        }
       ])
     }
   }, [localStorage.getItem("userRole"), location.pathname]);

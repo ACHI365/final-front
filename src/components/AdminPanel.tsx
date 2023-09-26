@@ -40,18 +40,24 @@ const AdminPanel: React.FC = () => {
   const handleNavigate = (revId: number) => {
     navigate("/review/" + revId);
   };
+  const handleNavigateUser = (userId: number) => {
+    navigate("/user/" + userId);
+  };
 
   return (
     <ul role="list" className="divide-y divide-gray-100">
       {users.map((user) => (
         <li key={user.email} className="flex justify-between gap-x-6 py-5">
           <div className="flex min-w-0 gap-x-4">
-            <div
-              className="h-12 w-12 flex-none "
-            ></div>
+            <div className="h-12 w-12 flex-none "></div>
             <div className="min-w-0 flex-auto">
               <p className="text-sm font-semibold leading-6 text-gray-900">
-                {user.name}
+                <Link
+                  to={`/user/${user.userId}`}
+                  onClick={() => handleNavigateUser(user.userId)}
+                >
+                  {user.name}
+                </Link>
               </p>
               <p className="mt-1 truncate text-xs leading-5 text-gray-500">
                 {user.email}

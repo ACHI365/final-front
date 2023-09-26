@@ -17,16 +17,30 @@ const classNames = (...classes: string[]) => {
 
 export default function Navbar(): JSX.Element {
   const location = useLocation();
-  let team = []
-  if(localStorage.getItem("userRole") == "1"){
-    team =
-     [{ name: 'Dashboard', href: '/', current: location.pathname === '/' },
-    { name: 'Create Review', href: '/create-review', current: location.pathname === '/create-review' },
-    { name: 'Admin Panel', href: '/admin-panel', current: location.pathname === '/admin-panel' }]
-  }else{
-    team = 
-    [{ name: 'Dashboard', href: '/', current: location.pathname === '/' },
-    { name: 'Create Review', href: '/create-review', current: location.pathname === '/create-review' }]
+  let team = [];
+  if (String(localStorage.getItem("userRole")) === String(1)) {
+    team = [
+      { name: "Dashboard", href: "/", current: location.pathname === "/" },
+      {
+        name: "Create Review",
+        href: "/create-review",
+        current: location.pathname === "/create-review",
+      },
+      {
+        name: "Admin Panel",
+        href: "/admin-panel",
+        current: location.pathname === "/admin-panel",
+      },
+    ];
+  } else {
+    team = [
+      { name: "Dashboard", href: "/", current: location.pathname === "/" },
+      {
+        name: "Create Review",
+        href: "/create-review",
+        current: location.pathname === "/create-review",
+      },
+    ];
   }
 
   const [navigation, setNavigation] = useState<NavigationItem[]>(team);
@@ -38,7 +52,7 @@ export default function Navbar(): JSX.Element {
     }));
     setNavigation(updatedNavigation);
   };
-  
+
   const { isLoaded, isSignedIn, user } = useUser();
   const { signOut } = useClerk();
   const auth = useAuth();

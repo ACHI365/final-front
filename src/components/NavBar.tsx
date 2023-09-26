@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, useState } from "react";
+import { Fragment, ReactNode, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { GlobeIcon, BellIcon, ArrowDownIcon } from "@heroicons/react/outline";
 import { useClerk, useUser } from "@clerk/clerk-react";
@@ -52,6 +52,24 @@ export default function Navbar(): JSX.Element {
     }));
     setNavigation(updatedNavigation);
   };
+
+  useEffect(() => {
+    if (String(localStorage.getItem("userRole")) === String(1)) {
+      setNavigation([
+        { name: "Dashboard", href: "/", current: location.pathname === "/" },
+        {
+          name: "Create Review",
+          href: "/create-review",
+          current: location.pathname === "/create-review",
+        },
+        {
+          name: "Admin Panel",
+          href: "/admin-panel",
+          current: location.pathname === "/admin-panel",
+        },
+      ])
+    }
+  }, [localStorage.getItem("userRole"), location.pathname]);
 
   const { isLoaded, isSignedIn, user } = useUser();
   const { signOut } = useClerk();

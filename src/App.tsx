@@ -24,9 +24,11 @@ import React, { useEffect } from 'react';
 
 const App: React.FC = () => {
 
+  if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
+    throw new Error("Missing Publishable Key");
+  }
 
-  const clerkPubKey = "pk_test_d2VsY29tZS1zd2lmdC05MS5jbGVyay5hY2NvdW50cy5kZXYk";
-
+  const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
   const AdminPanelRoute: React.FC = () => {
     const navigate = useNavigate();
   

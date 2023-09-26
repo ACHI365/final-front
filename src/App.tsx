@@ -23,11 +23,9 @@ import React, { useEffect } from 'react';
 
 
 const App: React.FC = () => {
-  if (!process.env.REACT_APP_CLERK_PUBLISHABLE_KEY) {
-    throw new Error("Missing Publishable Key");
-  }
 
-  const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
+
+  const clerkPubKey = "pk_test_d2VsY29tZS1zd2lmdC05MS5jbGVyay5hY2NvdW50cy5kZXYk";
 
   const AdminPanelRoute: React.FC = () => {
     const navigate = useNavigate();
@@ -38,9 +36,13 @@ const App: React.FC = () => {
       if (!jwtToken) {
         navigate('/sign-in');
       }
-    }, [navigate]);
+    }, []);
   
-  
+    console.log(localStorage.getItem("jwtToken") == "1");
+    console.log(localStorage.getItem("jwtToken") === "1");
+    console.log(String(localStorage.getItem("jwtToken")) === String(1));
+    
+    
     return localStorage.getItem("jwtToken") == "1" ? <AdminPanel /> : null;
   };
 
@@ -76,7 +78,7 @@ const App: React.FC = () => {
           <Route path="/tag/:tagName" element={<TagPage />}></Route>
           <Route path="/groups/:group" element={<GroupPage />}></Route>
           <Route path="/piece/:pieceId" element={<PiecePage />}></Route>
-          <Route path="/user/:userId" element={<UserPage></UserPage>}></Route>
+          <Route path="/user/:userId" element={<UserPage />}></Route>
 
           <Route
             path="/sign-in/*"

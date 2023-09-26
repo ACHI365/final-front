@@ -32,18 +32,12 @@ const App: React.FC = () => {
   
     useEffect(() => {
       const jwtToken = localStorage.getItem('jwtToken');
-  
       if (!jwtToken) {
         navigate('/sign-in');
       }
     }, []);
-  
-    console.log(localStorage.getItem("jwtToken") == "1");
-    console.log(localStorage.getItem("jwtToken") === "1");
-    console.log(String(localStorage.getItem("jwtToken")) === String(1));
-    
-    
-    return localStorage.getItem("jwtToken") == "1" ? <AdminPanel /> : null;
+
+    return localStorage.getItem("userRole") === "1" ? <AdminPanel /> : null;
   };
 
   const ClerkWithRoutes = () => {

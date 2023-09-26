@@ -48,8 +48,6 @@ const AdminPanel: React.FC = () => {
           <div className="flex min-w-0 gap-x-4">
             <div
               className="h-12 w-12 flex-none "
-              //   src={user.imageUrl}
-              //   alt=""
             ></div>
             <div className="min-w-0 flex-auto">
               <p className="text-sm font-semibold leading-6 text-gray-900">
